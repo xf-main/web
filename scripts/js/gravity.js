@@ -15,7 +15,7 @@ function eventsource() {
   const outputElement = document.getElementById("output");
   const gravityBtn = document.getElementById("gravityBtn");
   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-  const url = `${document.body.dataset.apiurl}/action/gravity`;
+  const url = `${document.body.dataset.apiurl}/action/gravity?color=true`;
 
   if (outputElement.innerHTML.length > 0) {
     outputElement.innerHTML = "";

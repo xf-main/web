@@ -33,7 +33,7 @@
     "bootstrap-select": "1.13.18",
     "bootstrap-toggle": "2.2.2",
     "bstreeview": "1.2.0",
-    "chart.js": "4.5.0",
+    "chart.js": "4.5.1",
     "chartjs-adapter-moment": "1.0.1",
     "chartjs-plugin-deferred": "2.0.0",
     "chartjs-plugin-zoom": "2.2.0",
@@ -52,10 +52,10 @@
     "select2": "4.0.13"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.21",
-    "eslint": "^9.38.0",
+    "autoprefixer": "^10.4.22",
+    "eslint": "^9.39.1",
     "eslint-plugin-compat": "^6.0.2",
-    "globals": "^16.4.0",
+    "globals": "^16.5.0",
     "postcss": "^8.5.6",
     "postcss-cli": "^11.0.1",
     "prettier": "^3.6.2",
