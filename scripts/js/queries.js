@@ -14,6 +14,8 @@
 let beginningOfTime = null; // seconds since epoch (set from API: info/database.earliest_timestamp)
 // endOfTime should be the end of today (local), in seconds since epoch
 const endOfTime = moment().endOf("day").unix();
+// endOfEpoch to allow live updates to continue beyond end of day
+const endOfEpoch = 2_147_483_647; // Jan 19, 2038, 03:14 in seconds
 let from = null;
 let until = null;
 
@@ -532,6 +534,7 @@ let liveMode = false;
 $("#live").prop("checked", liveMode);
 $("#live").on("click", function () {
   liveMode = $(this).prop("checked");
+  until = endOfEpoch; // allow live updates to continue indefinitely
   liveUpdate();
 });
 
