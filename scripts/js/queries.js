@@ -9,9 +9,9 @@
 
 "use strict";
 
-// These values are provided by the API (/info/database).
+// These values are provided by the API
 // We initialize them as null and populate them during page init.
-let beginningOfTime = null; // seconds since epoch (set from API: info/database.earliest_timestamp)
+let beginningOfTime = null; // seconds since epoch
 // endOfTime should be the end of today (local), in seconds since epoch
 const endOfTime = moment().endOf("day").unix();
 // endOfEpoch to allow live updates to continue beyond end of day
@@ -45,39 +45,31 @@ function getDnssecConfig() {
   });
 }
 
-// Fetch database info (earliest timestamp, sizes, ...) from the API and
-// initialize related globals.
-function getDatabaseInfo() {
-  $.getJSON(document.body.dataset.apiurl + "/info/database", data => {
-    // earliest_timestamp is provided in seconds since epoch
-    // We have two sources: earliest_timestamp_disk (on-disk) and earliest_timestamp (in-memory)
-    // Use whichever is smallest and non-zero
-    const diskTimestamp = Number(data.earliest_timestamp_disk);
-    const memoryTimestamp = Number(data.earliest_timestamp);
+function initDateRangePicker(data) {
+  // earliest_timestamp is provided in seconds since epoch
+  // We have two sources: earliest_timestamp_disk (on-disk) and earliest_timestamp (in-memory)
+  // Use whichever is smallest and non-zero
+  const diskTimestamp = Number(data.earliest_timestamp_disk);
+  const memoryTimestamp = Number(data.earliest_timestamp);
 
-    // Filter out zero/invalid timestamps
-    const validTimestamps = [diskTimestamp, memoryTimestamp].filter(ts => ts > 0);
+  // Filter out zero/invalid timestamps
+  const validTimestamps = [diskTimestamp, memoryTimestamp].filter(ts => ts > 0);
 
-    // Use the smallest valid timestamp, or null if none exist
-    beginningOfTime = validTimestamps.length > 0 ? Math.min(...validTimestamps) : null;
+  // Use the smallest valid timestamp, or null if none exist
+  beginningOfTime = validTimestamps.length > 0 ? Math.min(...validTimestamps) : null;
 
-    // Round down to nearest 5-minute segment (300 seconds) if valid
-    if (beginningOfTime !== null) {
-      beginningOfTime = Math.floor(beginningOfTime / 300) * 300;
-    }
+  // Round down to nearest 5-minute segment (300 seconds) if valid
+  if (beginningOfTime !== null) {
+    beginningOfTime = Math.floor(beginningOfTime / 300) * 300;
+  }
 
-    // If from/until were not provided via GET, default them
-    // Only use defaults if beginningOfTime is valid
-    if (beginningOfTime !== null) {
-      from ??= beginningOfTime;
-      until ??= endOfTime;
-    }
+  // If from/until were not provided via GET, default them
+  // Only use defaults if beginningOfTime is valid
+  if (beginningOfTime !== null) {
+    from ??= beginningOfTime;
+    until ??= endOfTime;
+  }
 
-    initDateRangePicker();
-  });
-}
-
-function initDateRangePicker() {
   // If there's no valid data in the database, disable the datepicker
   if (beginningOfTime === null) {
     $("#querytime").prop("disabled", true);
@@ -571,9 +563,6 @@ $(() => {
     until = Number(GETDict.until);
   }
 
-  // Fetch earliest timestamp from API and initialize date picker / table
-  getDatabaseInfo();
-
   table = $("#all-queries").DataTable({
     ajax: {
       url: apiURL,
@@ -585,6 +574,12 @@ $(() => {
       dataFilter(d) {
         const json = JSON.parse(d);
         cursor = json.cursor; // Extract cursor from original data
+
+        // Initialize the date picker (if not already done)
+        if (beginningOfTime === null) {
+          initDateRangePicker(json);
+        }
+
         if (liveMode) {
           utils.setTimer(liveUpdate, REFRESH_INTERVAL.query_log);
         }
