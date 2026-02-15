@@ -104,7 +104,7 @@ function populateDataTable(endpoint) {
       const button = document.createElement("button");
 
       // Set button ID and add CSS classes
-      button.id = `delete${endpoint}${utils.hexEncode(data)}`
+      button.id = `delete${endpoint}${utils.hexEncode(data)}`;
       button.classList.add("btn", "btn-danger", "btn-xs");
 
       // Set data-* attributes
@@ -112,7 +112,7 @@ function populateDataTable(endpoint) {
       button.dataset.tag = data;
 
       // Disable the button if set by environment variables
-      button.disabled = setByEnv ? true : false;
+      button.disabled = setByEnv;
 
       // Add a trash icon to the button
       const iconSpan = document.createElement("span");
