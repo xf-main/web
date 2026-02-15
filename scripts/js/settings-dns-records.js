@@ -99,14 +99,27 @@ function populateDataTable(endpoint) {
     },
     rowCallback(row, data) {
       $(row).attr("data-id", data);
-      const button = `<button type="button"
-                      class="btn btn-danger btn-xs"
-                      id="delete${endpoint}${utils.hexEncode(data)}"
-                      data-tag="${data}"
-                      data-type="${endpoint}"
-                      ${setByEnv ? "disabled" : ""}>
-                      <span class="far fa-trash-alt"></span>
-                    </button>`;
+
+      // Create delete button
+      const button = document.createElement("button");
+
+      // Set button ID and add CSS classes
+      button.id = `delete${endpoint}${utils.hexEncode(data)}`
+      button.classList.add("btn", "btn-danger", "btn-xs");
+
+      // Set data-* attributes
+      button.dataset.type = endpoint;
+      button.dataset.tag = data;
+
+      // Disable the button if set by environment variables
+      button.disabled = setByEnv ? true : false;
+
+      // Add a trash icon to the button
+      const iconSpan = document.createElement("span");
+      iconSpan.classList.add("far", "fa-trash-alt");
+      button.append(iconSpan);
+
+      // Add the button to the table row
       $(`td:eq(${endpoint === "hosts" ? 2 : 3})`, row).html(button);
     },
     dom:
